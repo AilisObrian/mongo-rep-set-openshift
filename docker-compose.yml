@@ -1,33 +1,30 @@
 mongo1:
-  restart: always
+  image: bappr/mongo-rep-set:latest
+  ports:
+  - "27018:27017"
   environment:
-    MONGO_ROLE: primary
-  tty: true
-  hostname: mongo1
-  image: ongoworks/mongo-rep-set:latest
-  links:
-  - mongo2:mongo2
-  - mongo3:mongo3
-  stdin_open: true
+  - MONGO_ROLE=primary
+  - AUTH=yes
+  - REP_SET=rs0
+  - MONGO_CONF_REPSET={_id:'rs0',members:[{_id:1,host:'192.168.99.100:27018'},{_id:2,host:'192.168.99.100:27019'},{_id:3,host:'192.168.99.100:27020'}]}
+  - MONGO_ROOT_USER=root
+  - MONGO_ROOT_PASSWORD=root123
+  container_name: mongo1-docker-compose
 
 mongo2:
-  restart: always
-  tty: true
-  hostname: mongo2
-  image: ongoworks/mongo-rep-set:latest
-  links:
-  - mongo1:mongo1
-  - mongo3:mongo3
-  stdin_open: true
+  image: bappr/mongo-rep-set:latest
+  ports:
+  - "27019:27017"
+  environment:
+  - AUTH=yes
+  - REP_SET=rs0
+  container_name: mongo2-docker-compose
 
 mongo3:
-  restart: always
+  image: bappr/mongo-rep-set:latest
+  ports:
+  - "27020:27017"
   environment:
-    JOURNALING: 'no'
-  tty: true
-  hostname: mongo3
-  image: ongoworks/mongo-rep-set:latest
-  links:
-  - mongo1:mongo1
-  - mongo2:mongo2
-  stdin_open: true
+  - AUTH=yes
+  - REP_SET=rs0
+  container_name: mongo3-docker-compose
