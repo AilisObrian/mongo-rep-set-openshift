@@ -12,6 +12,7 @@ ADD run.sh /run.sh
 RUN chgrp -R 0 /opt/mongo/
 RUN chmod -R g+rw /opt/mongo/
 RUN find /opt/mongo/ -type d -exec chmod g+x {} +
+RUN chmod 600 /opt/mongo/mongodb-keyfile
 
 CMD ["/run.sh"]
 
