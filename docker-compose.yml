@@ -18,6 +18,7 @@ mongo2:
   environment:
   - AUTH=yes
   - REP_SET=rs0
+  - VERBOSE=yes
   container_name: mongo2-docker-compose
 
 mongo3:

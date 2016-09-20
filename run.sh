@@ -10,6 +10,10 @@ ls -l /opt/mongo/
 mongodb_cmd="mongod --storageEngine wiredTiger --keyFile /opt/mongo/mongodb-keyfile"
 cmd="$mongodb_cmd --replSet $REP_SET"
 
+if [ "$VERBOSE" == "yes" ]; then
+  cmd="$cmd --verbose"
+fi
+
 if [ "$AUTH" == "yes" ]; then
   cmd="$cmd --auth"
 fi
