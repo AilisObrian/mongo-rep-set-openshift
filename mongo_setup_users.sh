@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mongodb_setup_cmd="mongod --storageEngine wiredTiger"
+mongodb_setup_cmd="whoami && mongod --storageEngine wiredTiger"
 
 $mongodb_setup_cmd &
 
