@@ -5,7 +5,7 @@ if [ "$MONGO_ROLE" == "primary" ]; then
   /opt/mongo/mongo_setup_users.sh
 fi
 
-mongodb_cmd="mongod --storageEngine wiredTiger --keyFile /opt/mongo/mongodb-keyfile"
+mongodb_cmd="whoami && mongod --storageEngine wiredTiger --keyFile /opt/mongo/mongodb-keyfile"
 cmd="$mongodb_cmd --replSet $REP_SET"
 
 if [ "$AUTH" == "yes" ]; then
