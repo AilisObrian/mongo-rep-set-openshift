@@ -6,6 +6,7 @@ if [ "$MONGO_ROLE" == "primary" ]; then
 fi
 
 whoami
+ls -l /opt/mongo/
 mongodb_cmd="mongod --storageEngine wiredTiger --keyFile /opt/mongo/mongodb-keyfile"
 cmd="$mongodb_cmd --replSet $REP_SET"
 
