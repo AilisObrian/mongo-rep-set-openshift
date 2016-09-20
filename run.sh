@@ -1,9 +1,9 @@
 #!/bin/bash
 set -m
 
-##Needed for openshift...
-#cp /tmp/mongo/mongodb-keyfile /opt/mongo/mongodb-keyfile
-#chmod 600 /opt/mongo/mongodb-keyfile
+#Needed for openshift...
+cp /tmp/mongo/mongodb-keyfile /opt/mongo/mongodb-keyfile
+chmod 600 /opt/mongo/mongodb-keyfile
 
 if [ "$MONGO_ROLE" == "primary" ]; then
   /opt/mongo/mongo_setup_users.sh
