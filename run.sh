@@ -2,7 +2,11 @@
 set -m
 
 #Needed for openshift...
-cp /tmp/mongo/mongodb-keyfile /opt/mongo/mongodb-keyfile
+if [ -n $KEYREPSET ]; then
+    echo $KEYREPSET >> /opt/mongo/mongodb-keyfile
+else
+    cp /tmp/mongo/mongodb-keyfile /opt/mongo/mongodb-keyfile
+fi
 chmod 600 /opt/mongo/mongodb-keyfile
 
 if [ "$MONGO_ROLE" == "primary" ]; then
