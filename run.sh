@@ -5,6 +5,9 @@ set -m
 if [ -n $KEY_REP_SET ]; then
     echo $KEY_REP_SET >> /opt/mongo/mongodb-keyfile
     chmod 600 /opt/mongo/mongodb-keyfile
+else
+    echo "KEY_REP_SET not defined"
+    exit 0
 fi
 
 if [ "$MONGO_ROLE" == "primary" ]; then
