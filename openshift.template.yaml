@@ -96,18 +96,18 @@ items:
                 value: ${MONGODB_REP_SET}
               - name: KEY_REP_SET
                 value: ${MONGODB_KEY_REP_SET}
-              - name: MONGODB_ROLE
-                value: ${MONGO_ROLE}
-              - name: MONGODB_ROOT_USER
-                value: ${MONGO_ROOT_USER}
-              - name: MONGODB_ROOT_PASSWORD
-                value: ${MONGO_ROOT_PASSWORD}
-              - name: MONGODB_CONF_REPSET
-                value: ${MONGO_CONF_REPSET}
-              - name: MONGOD_AUTH
-                value: ${AUTH}
-              - name: MONGOD_VERBOSE
-                value: ${VERBOSE}
+              - name: MONGO_ROLE
+                value: ${MONGODB_ROLE}
+              - name: MONGO_ROOT_USER
+                value: ${MONGODB_ROOT_USER}
+              - name: MONGO_ROOT_PASSWORD
+                value: ${MONGODB_ROOT_PASSWORD}
+              - name: MONGO_CONF_REPSET
+                value: ${MONGODB_CONF_REPSET}
+              - name: AUTH
+                value: ${MONGOD_AUTH}
+              - name: VERBOSE
+                value: ${MONGOD_VERBOSE}
             volumeMounts:
               - name: ${APPLICATION_NAME}-volume-1
                 mountPath: /data/configdb
