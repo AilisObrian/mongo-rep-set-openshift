@@ -19,7 +19,7 @@ items:
     description: Replica set name
   - name: MONGODB_KEY_REP_SET
     required: true
-    description: KEY for RepSet authentication (generated with openssl rand -base64 741)
+    description: KEY for RepSet authentication (generated with openssl rand -base64 741 and remove spaces)
   - name: MONGODB_ROLE
     required: true
     description: primary / secondary - if primary, create root user and run rs.initiate(conf)
