@@ -2,8 +2,8 @@
 set -m
 
 #Needed for openshift...
-if [ -n $KEYREPSET ]; then
-    echo $KEYREPSET >> /opt/mongo/mongodb-keyfile
+if [ -n $KEY_REP_SET ]; then
+    echo $KEY_REP_SET >> /opt/mongo/mongodb-keyfile
 else
     cp /tmp/mongo/mongodb-keyfile /opt/mongo/mongodb-keyfile
 fi

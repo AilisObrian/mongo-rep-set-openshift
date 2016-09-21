@@ -1,0 +1,214 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Template
+  metadata:
+    name: mongodb-node-repset
+    annotations:
+      description: Deploy a MongoDB RepSet Node
+  labels:
+    template: mongodb-node-repset
+    app: mongodb-node-repset
+
+  parameters:
+  - name: APPLICATION_NAME
+    required: true
+    description: Application name
+  - name: REP_SET
+    required: true
+    description: Replica set name
+  - name:
+  - name: MONGO_ROLE
+    required: true
+    description: primary / secondary - if primary, create root user and run rs.initiate(conf)
+  - name: MONGO_ROOT_USER
+    description: if primary, create MONGO_ROOT_USER
+  - name: MONGO_ROOT_PASSWORD
+    description: if primary, create MONGO_ROOT_USER with MONGO_ROOT_PASSWORD
+  - name: AUTH
+    description: yes / no - run mongod with --auth
+  - name: VERBOSE
+    description: yes / no - run mongod with --verbose
+
+  objects:
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME}
+
+  - kind: BuildConfig
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME}
+    spec:
+      strategy:
+        type: Docker
+        dockerStrategy:
+          env:
+            - name: http_proxy
+              value: ${HTTP_PROXY}
+            - name: https_proxy
+              value: ${HTTPS_PROXY}
+            - name: no_proxy
+              value: 172.30.242.237
+      source:
+        type: Git
+        git:
+          uri: "https://github.com/AXA-GROUP-SOLUTIONS/${GITHUB_REPO_NAME}"
+          ref: ${GIT_REF}
+          httpProxy: ${HTTP_PROXY}
+          httpsProxy: ${HTTPS_PROXY}
+        sourceSecret:
+          name: ${GITHUB_TOKEN_SECRET}
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME}
+      labels:
+        app: ${APPLICATION_NAME}
+    spec:
+      replicas: 1
+      selector:
+        deploymentconfig: ${APPLICATION_NAME}
+      strategy:
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 9000
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            deploymentconfig: ${APPLICATION_NAME}
+            application: ${APPLICATION_NAME}
+        spec:
+          volumes:
+            -
+              name: as400data
+              nfs:
+                server: ${NFS_HOST_IP}
+                path: ${NFS_FLAT_FILES_PATH}
+            -
+              name: projectdata
+              nfs:
+                server: ${NFS_HOST_IP}
+                path: ${NFS_SHARE_DIR_PATH}
+          containers:
+          - name: ${APPLICATION_NAME}
+            image: ${APPLICATION_NAME}:latest
+            env:
+            - name: PATH
+              value: '/opt/app-root/src/node_modules/.bin/:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+            - name: STI_SCRIPTS_URL
+              value: 'image:///usr/libexec/s2i'
+            - name: STI_SCRIPTS_PATH
+              value: /usr/libexec/s2i
+            - name: HOME
+              value: /opt/app-root/src
+            - name: BASH_ENV
+              value: /opt/app-root/etc/scl_enable
+            - name: ENV
+              value: /opt/app-root/etc/scl_enable
+            - name: PROMPT_COMMAND
+              value: '. /opt/app-root/etc/scl_enable'
+            - name: MONGODB_USER
+              value: ${MONGODB_USER}
+            - name: MONGODB_PASSWORD
+              value: ${MONGODB_PASSWORD}
+            - name: MONGODB_DATABASE
+              value: ${MONGODB_DATABASE}
+            - name: MONGODB_SERVICE_HOSTS
+              value: ${MONGODB_SERVICE_HOSTS}
+            - name: MONGODB_SERVICE_PORT
+              value: ${MONGODB_SERVICE_PORT}
+            - name: MONGODB_BULK_SIZE
+              value: ${MONGODB_BULK_SIZE}
+            - name: MONGODB_BULK_WRITECONCERN
+              value: ${MONGODB_BULK_WRITECONCERN}
+            - name: PORT
+              value: ${PORT}
+            - name: LOG_LEVEL
+              value: ${LOG_LEVEL}
+            - name: NODE_ENV
+              value: ${NODE_ENV}
+            - name: HTTP_PROXY
+              value: ${HTTP_PROXY}
+            - name: HTTPS_PROXY
+              value: ${HTTPS_PROXY}
+            - name: NO_HTTPS
+              value: ${NO_HTTPS}
+            - name: SHARE_DIR
+              value: ${SHARE_DIR}
+            - name: SMTP_HOST
+              value: ${SMTP_HOST}
+            - name: SMTP_PORT
+              value: ${SMTP_PORT}
+            - name: SMTP_FROM
+              value: ${SMTP_FROM}
+            - name: CONTENTO_REPOSITORY
+              value: ${CONTENTO_REPOSITORY}
+            - name: CONTENTO_TOKEN
+              value: ${CONTENTO_TOKEN}
+            - name: CONTENTO_WORKSPACE
+              value: ${CONTENTO_WORKSPACE}
+            - name: CONTENTO_DOMAIN
+              value: ${CONTENTO_DOMAIN}
+            - name: CONTENTO_API_MAX_AGE
+              value: ${CONTENTO_API_MAX_AGE}
+            - name: CONTENTO_HTTP_MAX_DURATION
+              value: ${CONTENTO_HTTP_MAX_DURATION}
+            - name: TOKEN_SECRET
+              value: ${TOKEN_SECRET}
+            - name: FRONTEND_URL
+              value: ${FRONTEND_URL}
+            - name: EMAIL_ENCRYPTION
+              value: ${EMAIL_ENCRYPTION}
+            - name: SMS_HOST
+              value: ${SMS_HOST}
+            - name: SMS_USERNAME
+              value: ${SMS_USERNAME}
+            - name: SMS_PASSWORD
+              value: ${SMS_PASSWORD}
+            volumeMounts:
+              - name: as400data
+                mountPath: /eb-flat-files
+              - name: projectdata
+                mountPath: /shareDir
+
+      triggers:
+      - type: ConfigChange
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          from:
+            kind: ImageStreamTag
+            name: ${APPLICATION_NAME}:latest
+          containerNames:
+          - ${APPLICATION_NAME}
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME}
+      labels:
+        app: ${APPLICATION_NAME}
+        application: ${APPLICATION_NAME}
+    spec:
+      selector:
+        deploymentconfig: ${APPLICATION_NAME}
+      ports:
+      - name: 8080-tcp
+        port: 8080
+        protocol: TCP
+      targetPort: 8080
+
+kind: List
+metadata: {}
