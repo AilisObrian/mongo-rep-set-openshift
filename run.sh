@@ -4,10 +4,8 @@ set -m
 #Needed for openshift...
 if [ -n $KEY_REP_SET ]; then
     echo $KEY_REP_SET >> /opt/mongo/mongodb-keyfile
-else
-    cp /tmp/mongo/mongodb-keyfile /opt/mongo/mongodb-keyfile
+    chmod 600 /opt/mongo/mongodb-keyfile
 fi
-chmod 600 /opt/mongo/mongodb-keyfile
 
 if [ "$MONGO_ROLE" == "primary" ]; then
   /opt/mongo/mongo_setup_users.sh
