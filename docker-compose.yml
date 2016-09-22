@@ -23,7 +23,7 @@ services:
     environment:
     - AUTH=yes
     - REP_SET=rs0
-    - VERBOSE=yes
+    - VERBOSE=no
     - KEY_REP_SET=tototata
     networks:
     - my-mongo-net
