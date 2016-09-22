@@ -1,34 +1,45 @@
-mongo1:
-  image: bappr/mongo-rep-set:latest
-  ports:
-  - "27018:27017"
-  environment:
-  - MONGO_ROLE=primary
-  - AUTH=yes
-  - REP_SET=rs0
-  - MONGO_CONF_REPSET={_id:'rs0',members:[{_id:1,host:'192.168.99.100:27018'},{_id:2,host:'192.168.99.100:27019'},{_id:3,host:'192.168.99.100:27020'}]}
-  - MONGO_ROOT_USER=root
-  - MONGO_ROOT_PASSWORD=root123
-  - KEY_REP_SET=tototata
-  container_name: mongo1-docker-compose
+version: "2"
 
-mongo2:
-  image: bappr/mongo-rep-set:latest
-  ports:
-  - "27019:27017"
-  environment:
-  - AUTH=yes
-  - REP_SET=rs0
-  - VERBOSE=yes
-  - KEY_REP_SET=tototata
-  container_name: mongo2-docker-compose
+services:
+  mongo1:
+    image: bappr/mongo-rep-set:latest
+    ports:
+    - "27018:27017"
+    environment:
+    - MONGO_ROLE=primary
+    - AUTH=yes
+    - REP_SET=rs0
+    - MONGO_CONF_REPSET={_id:'rs0',members:[{_id:1,host:'mongo1'},{_id:2,host:'mongo2'},{_id:3,host:'mongo3'}]}
+    - MONGO_ROOT_USER=root
+    - MONGO_ROOT_PASSWORD=root123
+    - KEY_REP_SET=tototata
+    networks:
+    - my-mongo-net
+    container_name: mongo1
+  mongo2:
+    image: bappr/mongo-rep-set:latest
+    ports:
+    - "27019:27017"
+    environment:
+    - AUTH=yes
+    - REP_SET=rs0
+    - VERBOSE=yes
+    - KEY_REP_SET=tototata
+    networks:
+    - my-mongo-net
+    container_name: mongo2
+  mongo3:
+    image: bappr/mongo-rep-set:latest
+    ports:
+    - "27020:27017"
+    environment:
+    - AUTH=yes
+    - REP_SET=rs0
+    - KEY_REP_SET=tototata
+    networks:
+    - my-mongo-net
+    container_name: mongo3
 
-mongo3:
-  image: bappr/mongo-rep-set:latest
-  ports:
-  - "27020:27017"
-  environment:
-  - AUTH=yes
-  - REP_SET=rs0
-  - KEY_REP_SET=tototata
-  container_name: mongo3-docker-compose
+networks:
+  my-mongo-net:
+    driver: bridge
