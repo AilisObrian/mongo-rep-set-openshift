@@ -18,17 +18,18 @@ oc create -f openshift/openshift.persistent.template.yaml
 
 ## Launch on OpenPaas Using the templates
 
-Run 2 "secondary" (MONGODB_ROLE)
-- with the same KEY_REP_SET and REP_SET.
-- AUTH yes
-Run 1 "primary" (MONGODB_ROLE)
-- with the same KEY_REP_SET and REP_SET as secondaries
-- AUTH yes
-- with MONGODB_ROOT_USER and MONGODB_ROOT_PASSWORD specified
-- with MONGODB_CONF_REPSET specified
-=> {_id:'rs0',members:[{_id:1,host:'[primary_service]'},{_id:2,host:'[secondary_service_1'},{_id:3,host:'[secondary_service_2]'}]}
+1. Run 2 "secondary" (MONGODB_ROLE)
+    * with the same KEY_REP_SET and REP_SET.
+    * AUTH yes
 
-Once RepSet is fully setup and working
-1. SCALE DOWN primary
-2. Modify MONGODB_ROLE to secondary
-3. Redeploy
+2. Run 1 "primary" (MONGODB_ROLE)
+    * with the same KEY_REP_SET and REP_SET as secondaries
+    * AUTH yes
+    * with MONGODB_ROOT_USER and MONGODB_ROOT_PASSWORD specified
+    * with MONGODB_CONF_REPSET specified
+        * {_id:'rs0',members:[{_id:1,host:'[primary_service]'},{_id:2,host:'[secondary_service_1'},{_id:3,host:'[secondary_service_2]'}]}
+
+3. Once RepSet is fully setup and working
+    * SCALE DOWN primary
+    * Modify MONGODB_ROLE to secondary
+    * Redeploy
