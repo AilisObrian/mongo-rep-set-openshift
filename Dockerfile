@@ -3,6 +3,7 @@ FROM mongo:latest
 RUN mkdir /opt/mongo
 ADD scripts/mongo_setup_users.sh /opt/mongo/mongo_setup_users.sh
 ADD scripts/mongo_setup_repset.sh /opt/mongo/mongo_setup_repset.sh
+#Needed for Openshift...
 RUN chmod 777 /opt/mongo
 
 ADD scripts/run.sh /run.sh

@@ -7,7 +7,7 @@ Mongo version:  **latest**
 #### Build
 
 ```sh
-docker build -t mongo-rep-set:latest .
+docker build -t bappr/mongo-rep-set:latest .
 ```
 
 ## Launch
