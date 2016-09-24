@@ -15,6 +15,7 @@ items:
     required: true
     description: Application name
   - name: PERSISTENT_VOLUME_CLAIM
+    required: true
     description: Persistent Volume Claim
   - name: MONGODB_REP_SET
     required: true
