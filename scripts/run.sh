@@ -15,14 +15,10 @@ if [ "$MONGO_ROLE" == "primary" ]; then
 fi
 
 mongodb_cmd="mongod --storageEngine wiredTiger --keyFile /opt/mongo/mongodb-keyfile"
-cmd="$mongodb_cmd --replSet $REP_SET"
+cmd="$mongodb_cmd --replSet $REP_SET --auth"
 
 if [ "$VERBOSE" == "yes" ]; then
   cmd="$cmd --verbose"
-fi
-
-if [ "$AUTH" == "yes" ]; then
-  cmd="$cmd --auth"
 fi
 
 $cmd &

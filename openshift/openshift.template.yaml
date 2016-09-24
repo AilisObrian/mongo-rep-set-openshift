@@ -29,8 +29,6 @@ items:
     description: if primary, create MONGO_ROOT_USER with MONGO_ROOT_PASSWORD
   - name: MONGODB_CONF_REPSET
     description: if primary, run rs.initiate(MONGO_CONF_REPSET)
-  - name: MONGOD_AUTH
-    description: yes / no - run mongod with --auth
   - name: MONGOD_VERBOSE
     description: yes / no - run mongod with --verbose
 
@@ -104,8 +102,6 @@ items:
                 value: ${MONGODB_ROOT_PASSWORD}
               - name: MONGO_CONF_REPSET
                 value: ${MONGODB_CONF_REPSET}
-              - name: AUTH
-                value: ${MONGOD_AUTH}
               - name: VERBOSE
                 value: ${MONGOD_VERBOSE}
             volumeMounts:

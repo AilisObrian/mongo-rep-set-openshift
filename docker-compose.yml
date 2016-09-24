@@ -7,7 +7,6 @@ services:
     - "27018:27017"
     environment:
     - MONGO_ROLE=primary
-    - AUTH=yes
     - REP_SET=rs0
     - MONGO_CONF_REPSET={_id:'rs0',members:[{_id:1,host:'mongo1'},{_id:2,host:'mongo2'},{_id:3,host:'mongo3'}]}
     - MONGO_ROOT_USER=root
@@ -21,7 +20,6 @@ services:
     ports:
     - "27019:27017"
     environment:
-    - AUTH=yes
     - REP_SET=rs0
     - VERBOSE=no
     - KEY_REP_SET=tototata
@@ -33,7 +31,6 @@ services:
     ports:
     - "27020:27017"
     environment:
-    - AUTH=yes
     - REP_SET=rs0
     - KEY_REP_SET=tototata
     networks:
