@@ -52,7 +52,7 @@ items:
       source:
         type: Git
         git:
-          uri: "https://github.com/bappr/mongo-rep-set"
+          uri: "https://github.com/bappr/mongo-rep-set-openshift"
           ref: "master"
       output:
         to:
