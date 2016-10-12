@@ -20,7 +20,7 @@ oc create -f openshift.persistent.template.yaml
 
 1. Fill the information
 
-3. Once RepSet is fully setup and working
+2. Once RepSet is fully setup and working
     * SCALE DOWN primary (node 1)
     * Modify MONGODB_ROLE to secondary
     * Redeploy

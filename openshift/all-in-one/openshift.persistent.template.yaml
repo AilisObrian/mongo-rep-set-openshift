@@ -3,12 +3,12 @@ items:
 - apiVersion: v1
   kind: Template
   metadata:
-    name: mongodb-repset-ephemere
+    name: mongodb-repset-persistent
     annotations:
       description: Deploy a MongoDB RepSet
   labels:
-    template: mongodb-repset-ephemere
-    app: mongodb-repset-ephemere
+    template: mongodb-repset-persistent
+    app: mongodb-repset-persistent
 
   parameters:
   - name: APPLICATION_NAME_1
@@ -20,7 +20,7 @@ items:
   - name: APPLICATION_NAME_2
     required: true
     description: Application name for node 2
-  - name: PERSISTENT_VOLUME_CLAIM_2rs.
+  - name: PERSISTENT_VOLUME_CLAIM_2
     required: true
     description: Persistent Volume for node 2
   - name: APPLICATION_NAME_3
