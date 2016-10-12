@@ -54,6 +54,11 @@ items:
         git:
           uri: "https://github.com/bappr/mongo-rep-set-openshift"
           ref: "master"
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
       output:
         to:
           kind: ImageStreamTag

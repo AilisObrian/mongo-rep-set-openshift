@@ -1,0 +1,357 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Template
+  metadata:
+    name: mongodb-repset-ephemere
+    annotations:
+      description: Deploy a MongoDB RepSet
+  labels:
+    template: mongodb-repset-ephemere
+    app: mongodb-repset-ephemere
+
+  parameters:
+  - name: APPLICATION_NAME_1
+    required: true
+    description: Application name for node 1
+  - name: APPLICATION_NAME_2
+    required: true
+    description: Application name for node 2
+  - name: APPLICATION_NAME_3
+    required: true
+    description: Application name for node 3
+  - name: MONGODB_REP_SET
+    required: true
+    description: Replica set name
+  - name: MONGODB_KEY_REP_SET
+    required: true
+    description: Key for RepSet authentication (generated with openssl rand -base64 741 and remove spaces)
+  - name: MONGODB_ROOT_USER
+    required: true
+    description: if primary, create MONGO_ROOT_USER
+  - name: MONGODB_ROOT_PASSWORD
+    required: true
+    description: if primary, create MONGO_ROOT_USER with MONGO_ROOT_PASSWORD
+  - name: MONGOD_VERBOSE
+    description: yes / no - run mongod with --verbose
+
+  objects:
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_1}
+
+  - kind: BuildConfig
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_1}
+    spec:
+      strategy:
+        type: Docker
+        dockerStrategy: {}
+      source:
+        type: Git
+        git:
+          uri: "https://github.com/bappr/mongo-rep-set-openshift"
+          ref: "master"
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME_1}:latest
+
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_1}
+      labels:
+        app: ${APPLICATION_NAME_1}
+    spec:
+      replicas: 1
+      selector:
+        deploymentconfig: ${APPLICATION_NAME_1}
+      strategy:
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 9000
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            deploymentconfig: ${APPLICATION_NAME_1}
+            application: ${APPLICATION_NAME_1}
+        spec:
+          volumes:
+            -
+              name: ${APPLICATION_NAME_1}-volume-1
+            -
+              name: ${APPLICATION_NAME_1}-volume-2
+          containers:
+          - name: ${APPLICATION_NAME_1}
+            image: ${APPLICATION_NAME_1}:latest
+            env:
+              - name: REP_SET
+                value: ${MONGODB_REP_SET}
+              - name: KEY_REP_SET
+                value: ${MONGODB_KEY_REP_SET}
+              - name: MONGO_ROLE
+                value: primary
+              - name: MONGO_ROOT_USER
+                value: ${MONGODB_ROOT_USER}
+              - name: MONGO_ROOT_PASSWORD
+                value: ${MONGODB_ROOT_PASSWORD}
+              - name: MONGO_CONF_REPSET
+                value: '{_id:''${MONGODB_REP_SET}'',members:[{_id:1,host:''mongodb-01''},{_id:2,host:''mongodb-02''},{_id:3,host:''mongodb-03''}]}'
+              - name: VERBOSE
+                value: ${MONGOD_VERBOSE}
+            volumeMounts:
+              - name: ${APPLICATION_NAME_1}-volume-1
+                mountPath: /data/configdb
+              - name: ${APPLICATION_NAME_1}-volume-2
+                mountPath: /data/db
+
+      triggers:
+      - type: ConfigChange
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          from:
+            kind: ImageStreamTag
+            name: ${APPLICATION_NAME_1}:latest
+          containerNames:
+          - ${APPLICATION_NAME_1}
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_1}
+      labels:
+        app: ${APPLICATION_NAME_1}
+        application: ${APPLICATION_NAME_1}
+    spec:
+      selector:
+        deploymentconfig: ${APPLICATION_NAME_1}
+      ports:
+      - name: 27017-tcp
+        port: 27017
+        protocol: TCP
+      targetPort: 27017
+
+
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_2}
+
+  - kind: BuildConfig
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_2}
+    spec:
+      strategy:
+        type: Docker
+        dockerStrategy: {}
+      source:
+        type: Git
+        git:
+          uri: "https://github.com/bappr/mongo-rep-set-openshift"
+          ref: "master"
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME_2}:latest
+
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_2}
+      labels:
+        app: ${APPLICATION_NAME_2}
+    spec:
+      replicas: 1
+      selector:
+        deploymentconfig: ${APPLICATION_NAME_2}
+      strategy:
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 9000
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            deploymentconfig: ${APPLICATION_NAME_2}
+            application: ${APPLICATION_NAME_2}
+        spec:
+          volumes:
+            -
+              name: ${APPLICATION_NAME_2}-volume-1
+            -
+              name: ${APPLICATION_NAME_2}-volume-2
+          containers:
+          - name: ${APPLICATION_NAME_2}
+            image: ${APPLICATION_NAME_2}:latest
+            env:
+              - name: REP_SET
+                value: ${MONGODB_REP_SET}
+              - name: KEY_REP_SET
+                value: ${MONGODB_KEY_REP_SET}
+              - name: MONGO_ROLE
+                value: secondary
+              - name: VERBOSE
+                value: ${MONGOD_VERBOSE}
+            volumeMounts:
+              - name: ${APPLICATION_NAME_2}-volume-1
+                mountPath: /data/configdb
+              - name: ${APPLICATION_NAME_2}-volume-2
+                mountPath: /data/db
+
+      triggers:
+      - type: ConfigChange
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          from:
+            kind: ImageStreamTag
+            name: ${APPLICATION_NAME_2}:latest
+          containerNames:
+          - ${APPLICATION_NAME_2}
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_2}
+      labels:
+        app: ${APPLICATION_NAME_2}
+        application: ${APPLICATION_NAME_2}
+    spec:
+      selector:
+        deploymentconfig: ${APPLICATION_NAME_2}
+      ports:
+      - name: 27017-tcp
+        port: 27017
+        protocol: TCP
+      targetPort: 27017
+
+
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_3}
+
+  - kind: BuildConfig
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_3}
+    spec:
+      strategy:
+        type: Docker
+        dockerStrategy: {}
+      source:
+        type: Git
+        git:
+          uri: "https://github.com/bappr/mongo-rep-set-openshift"
+          ref: "master"
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME_3}:latest
+
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_3}
+      labels:
+        app: ${APPLICATION_NAME_3}
+    spec:
+      replicas: 1
+      selector:
+        deploymentconfig: ${APPLICATION_NAME_3}
+      strategy:
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 9000
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            deploymentconfig: ${APPLICATION_NAME_3}
+            application: ${APPLICATION_NAME_3}
+        spec:
+          volumes:
+            -
+              name: ${APPLICATION_NAME_3}-volume-1
+            -
+              name: ${APPLICATION_NAME_3}-volume-2
+          containers:
+          - name: ${APPLICATION_NAME_3}
+            image: ${APPLICATION_NAME_3}:latest
+            env:
+              - name: REP_SET
+                value: ${MONGODB_REP_SET}
+              - name: KEY_REP_SET
+                value: ${MONGODB_KEY_REP_SET}
+              - name: MONGO_ROLE
+                value: secondary
+              - name: VERBOSE
+                value: ${MONGOD_VERBOSE}
+            volumeMounts:
+              - name: ${APPLICATION_NAME_3}-volume-1
+                mountPath: /data/configdb
+              - name: ${APPLICATION_NAME_3}-volume-2
+                mountPath: /data/db
+
+      triggers:
+      - type: ConfigChange
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          from:
+            kind: ImageStreamTag
+            name: ${APPLICATION_NAME_3}:latest
+          containerNames:
+          - ${APPLICATION_NAME_3}
+
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: ${APPLICATION_NAME_3}
+      labels:
+        app: ${APPLICATION_NAME_3}
+        application: ${APPLICATION_NAME_3}
+    spec:
+      selector:
+        deploymentconfig: ${APPLICATION_NAME_3}
+      ports:
+      - name: 27017-tcp
+        port: 27017
+        protocol: TCP
+      targetPort: 27017
+
+kind: List
+metadata: {}

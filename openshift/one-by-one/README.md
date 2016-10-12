@@ -8,12 +8,12 @@ Mongo version:  **latest**
 
 For non persistent mongodb node
 ```sh
-oc create -f openshift/openshift.template.yaml
+oc create -f openshift.template.yaml
 ```
 
 For persistent mongodb node
 ```sh
-oc create -f openshift/openshift.persistent.template.yaml
+oc create -f openshift.persistent.template.yaml
 ```
 
 ## Launch on OpenPaas Using the templates
