@@ -18,7 +18,7 @@ Role is not related to MongoDB state.
 ##### Cluster with Authentication
 
 Env var | Value | Description | Comment | Only if Authentication enabled | Only if Primary
------------- | ------------- | ------------- | ------------- | -------------
+------------ | ------------- | ------------- | ------------- | ------------- | -------------
 MONGO_ROLE | [primary] / [secondary]| | Only 1 primary in your cluster | No | No
 REP_SET | String | Name of the repset | Must be the same on each node | No | No
 NO_AUTH | [true] / [false]  | If authentication enabled | Must be the same on each node | No | No
