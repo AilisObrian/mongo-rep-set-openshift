@@ -15,8 +15,6 @@ docker build -t bappr/mongo-rep-set:latest .
 Node with primary role will create user and initiate the replicaset.
 Role is not related to MongoDB state.
 
-##### Cluster with Authentication
-
 Env var | Value | Description | Comment | Only if Authentication enabled | Only if Primary
 ------------ | ------------- | ------------- | ------------- | ------------- | -------------
 MONGO_ROLE | [primary] / [secondary]| | Only 1 primary in your cluster | No | No
