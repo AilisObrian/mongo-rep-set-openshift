@@ -4,7 +4,7 @@ services:
   mongo1:
     image: bappr/mongo-rep-set:latest
     ports:
-    - "27018:27017"
+    - "27017:27017"
     environment:
     - MONGO_ROLE=primary
     - REP_SET=rs0
@@ -12,27 +12,30 @@ services:
     - MONGO_ROOT_USER=root
     - MONGO_ROOT_PASSWORD=root123
     - KEY_REP_SET=tototata
+#    - NO_AUTH=true
     networks:
     - my-mongo-net
     container_name: mongo1
   mongo2:
     image: bappr/mongo-rep-set:latest
     ports:
-    - "27019:27017"
+    - "27018:27017"
     environment:
     - REP_SET=rs0
     - VERBOSE=no
     - KEY_REP_SET=tototata
+#    - NO_AUTH=true
     networks:
     - my-mongo-net
     container_name: mongo2
   mongo3:
     image: bappr/mongo-rep-set:latest
     ports:
-    - "27020:27017"
+    - "27019:27017"
     environment:
     - REP_SET=rs0
     - KEY_REP_SET=tototata
+#    - NO_AUTH=true
     networks:
     - my-mongo-net
     container_name: mongo3

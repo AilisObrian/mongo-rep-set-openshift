@@ -19,5 +19,10 @@ while [[ RET -ne 0 ]]; do
   fi
 done
 
-# Login as root and configure replica set
-mongo admin -u $MONGO_ROOT_USER -p $MONGO_ROOT_PASSWORD --eval "rs.initiate($MONGO_CONF_REPSET);"
+# configure replica set
+credentials="-u $MONGO_ROOT_USER -p $MONGO_ROOT_PASSWORD"
+if [ "$NO_AUTH" == "true" ]; then
+  credentials=""
+fi
+
+mongo admin $credentials --eval "rs.initiate($MONGO_CONF_REPSET);"
