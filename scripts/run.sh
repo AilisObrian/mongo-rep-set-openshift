@@ -3,6 +3,7 @@ set -m
 
 #Needed for openshift...
 if [ "$KEY_REP_SET" != "" ]; then
+  rm -rf /opt/mongo/mongodb-keyfile
   echo $KEY_REP_SET >> /opt/mongo/mongodb-keyfile
   chmod 600 /opt/mongo/mongodb-keyfile
 elif [ "$NO_AUTH" == "" ] || [ "$NO_AUTH" == "false" ]; then
