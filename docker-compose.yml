@@ -13,8 +13,6 @@ services:
     - MONGO_ROOT_PASSWORD=root123
     - KEY_REP_SET=tototata
 #    - NO_AUTH=true
-    networks:
-    - my-mongo-net
     container_name: mongo1
   mongo2:
     image: bappr/mongo-rep-set:latest
@@ -25,8 +23,6 @@ services:
     - VERBOSE=no
     - KEY_REP_SET=tototata
 #    - NO_AUTH=true
-    networks:
-    - my-mongo-net
     container_name: mongo2
   mongo3:
     image: bappr/mongo-rep-set:latest
@@ -36,10 +32,4 @@ services:
     - REP_SET=rs0
     - KEY_REP_SET=tototata
 #    - NO_AUTH=true
-    networks:
-    - my-mongo-net
     container_name: mongo3
-
-networks:
-  my-mongo-net:
-    driver: bridge
