@@ -11,7 +11,6 @@ services:
     - MONGO_CONF_REPSET={_id:'rs0',members:[{_id:1,host:'mongo1'},{_id:2,host:'mongo2'},{_id:3,host:'mongo3'}]}
     - MONGO_ROOT_USER=root
     - MONGO_ROOT_PASSWORD=root123
-    - KEY_REP_SET=tototata
 #    - NO_AUTH=true
     container_name: mongo1
   mongo2:
@@ -21,7 +20,6 @@ services:
     environment:
     - REP_SET=rs0
     - VERBOSE=no
-    - KEY_REP_SET=tototata
 #    - NO_AUTH=true
     container_name: mongo2
   mongo3:
@@ -30,6 +28,5 @@ services:
     - "27019:27017"
     environment:
     - REP_SET=rs0
-    - KEY_REP_SET=tototata
 #    - NO_AUTH=true
     container_name: mongo3

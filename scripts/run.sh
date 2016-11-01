@@ -1,17 +1,15 @@
 #!/bin/bash
 set -m
 
-#Needed for openshift...
-if [ "$KEY_REP_SET" != "" ]; then
-  rm -rf /opt/mongo/mongodb-keyfile
-  echo $KEY_REP_SET >> /opt/mongo/mongodb-keyfile
-  chmod 600 /opt/mongo/mongodb-keyfile
-elif [ "$NO_AUTH" == "" ] || [ "$NO_AUTH" == "false" ]; then
-  echo "KEY_REP_SET not defined"
-  exit 0
+already_set=false
+if [ "$(ls -A /data/db)" ]; then
+  echo "************************************************************"
+  echo "Node not empty..."
+  echo "************************************************************"
+  already_set=true
 fi
 
-if [ "$MONGO_ROLE" == "primary" ]; then
+if [ "$MONGO_ROLE" == "primary" ] && [ $already_set == false ]; then
   if [ "$NO_AUTH" == "" ] || [ "$NO_AUTH" == "false" ]; then
     /opt/mongo/mongo_setup_users.sh
   fi
@@ -32,7 +30,7 @@ fi
 
 $cmd &
 
-if [ "$MONGO_ROLE" == "primary" ]; then
+if [ "$MONGO_ROLE" == "primary" ]  && [ $already_set == false ]; then
   /opt/mongo/mongo_setup_repset.sh
 fi
 

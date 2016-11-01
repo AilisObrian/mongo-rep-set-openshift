@@ -48,7 +48,10 @@ items:
     spec:
       strategy:
         type: Docker
-        dockerStrategy: {}
+        dockerStrategy:
+          env:
+            - name: KEY_REP_SET
+              value: ${MONGODB_KEY_REP_SET}
       source:
         type: Git
         git:
@@ -100,8 +103,6 @@ items:
             env:
               - name: REP_SET
                 value: ${MONGODB_REP_SET}
-              - name: KEY_REP_SET
-                value: ${MONGODB_KEY_REP_SET}
               - name: MONGO_ROLE
                 value: primary
               - name: MONGO_ROOT_USER
@@ -109,7 +110,7 @@ items:
               - name: MONGO_ROOT_PASSWORD
                 value: ${MONGODB_ROOT_PASSWORD}
               - name: MONGO_CONF_REPSET
-                value: '{_id:''${MONGODB_REP_SET}'',members:[{_id:1,host:''mongodb-01''},{_id:2,host:''mongodb-02''},{_id:3,host:''mongodb-03''}]}'
+                value: '{_id:''${MONGODB_REP_SET}'',members:[{_id:1,host:''${APPLICATION_NAME_1}''},{_id:2,host:''${APPLICATION_NAME_2}''},{_id:3,host:''${APPLICATION_NAME_3}''}]}'
               - name: VERBOSE
                 value: ${MONGOD_VERBOSE}
             volumeMounts:
@@ -158,7 +159,10 @@ items:
     spec:
       strategy:
         type: Docker
-        dockerStrategy: {}
+        dockerStrategy:
+          env:
+            - name: KEY_REP_SET
+              value: ${MONGODB_KEY_REP_SET}
       source:
         type: Git
         git:
@@ -210,8 +214,6 @@ items:
             env:
               - name: REP_SET
                 value: ${MONGODB_REP_SET}
-              - name: KEY_REP_SET
-                value: ${MONGODB_KEY_REP_SET}
               - name: MONGO_ROLE
                 value: secondary
               - name: VERBOSE
@@ -262,7 +264,10 @@ items:
     spec:
       strategy:
         type: Docker
-        dockerStrategy: {}
+        dockerStrategy:
+          env:
+            - name: KEY_REP_SET
+              value: ${MONGODB_KEY_REP_SET}
       source:
         type: Git
         git:
@@ -314,8 +319,6 @@ items:
             env:
               - name: REP_SET
                 value: ${MONGODB_REP_SET}
-              - name: KEY_REP_SET
-                value: ${MONGODB_KEY_REP_SET}
               - name: MONGO_ROLE
                 value: secondary
               - name: VERBOSE

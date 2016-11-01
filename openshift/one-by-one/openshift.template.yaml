@@ -45,7 +45,10 @@ items:
     spec:
       strategy:
         type: Docker
-        dockerStrategy: {}
+        dockerStrategy:
+          env:
+            - name: KEY_REP_SET
+              value: ${MONGODB_KEY_REP_SET}
       source:
         type: Git
         git:
@@ -97,8 +100,6 @@ items:
             env:
               - name: REP_SET
                 value: ${MONGODB_REP_SET}
-              - name: KEY_REP_SET
-                value: ${MONGODB_KEY_REP_SET}
               - name: MONGO_ROLE
                 value: ${MONGODB_ROLE}
               - name: MONGO_ROOT_USER
