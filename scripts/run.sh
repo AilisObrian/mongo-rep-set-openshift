@@ -1,6 +1,9 @@
 #!/bin/bash
 set -m
 
+cp /opt/mongo/mongodb-keyfile /opt/mongo/mongodb-keyfile-os
+chmod 600 /opt/mongo/mongodb-keyfile-os
+
 already_set=false
 if [ "$(ls -A /data/db)" ]; then
   echo "************************************************************"
@@ -16,7 +19,7 @@ if [ "$MONGO_ROLE" == "primary" ] && [ $already_set == false ]; then
 fi
 
 auth="--auth"
-keyfile="--keyFile /opt/mongo/mongodb-keyfile"
+keyfile="--keyFile /opt/mongo/mongodb-keyfile-os"
 if [ "$NO_AUTH" == "true" ]; then
   auth=""
   keyfile=""

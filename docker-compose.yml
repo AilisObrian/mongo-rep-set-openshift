@@ -1,32 +1,34 @@
-version: "2"
+mongo1:
+  image: bappr/mongo-rep-set:latest
+  ports:
+  - "27017:27017"
+  environment:
+  - MONGO_ROLE=primary
+  - REP_SET=rs0
+  - MONGO_CONF_REPSET={_id:'rs0',members:[{_id:1,host:'mongo1'},{_id:2,host:'mongo2'},{_id:3,host:'mongo3'}]}
+  - MONGO_ROOT_USER=root
+  - MONGO_ROOT_PASSWORD=root123
+#    - NO_AUTH=true
+  net: mongo-net
+  container_name: mongo1
 
-services:
-  mongo1:
-    image: bappr/mongo-rep-set:latest
-    ports:
-    - "27017:27017"
-    environment:
-    - MONGO_ROLE=primary
-    - REP_SET=rs0
-    - MONGO_CONF_REPSET={_id:'rs0',members:[{_id:1,host:'mongo1'},{_id:2,host:'mongo2'},{_id:3,host:'mongo3'}]}
-    - MONGO_ROOT_USER=root
-    - MONGO_ROOT_PASSWORD=root123
+mongo2:
+  image: bappr/mongo-rep-set:latest
+  ports:
+  - "27018:27017"
+  environment:
+  - REP_SET=rs0
+  - VERBOSE=no
 #    - NO_AUTH=true
-    container_name: mongo1
-  mongo2:
-    image: bappr/mongo-rep-set:latest
-    ports:
-    - "27018:27017"
-    environment:
-    - REP_SET=rs0
-    - VERBOSE=no
+  net: mongo-net
+  container_name: mongo2
+
+mongo3:
+  image: bappr/mongo-rep-set:latest
+  ports:
+  - "27019:27017"
+  environment:
+  - REP_SET=rs0
 #    - NO_AUTH=true
-    container_name: mongo2
-  mongo3:
-    image: bappr/mongo-rep-set:latest
-    ports:
-    - "27019:27017"
-    environment:
-    - REP_SET=rs0
-#    - NO_AUTH=true
-    container_name: mongo3
+  net: mongo-net
+  container_name: mongo3
